@@ -30,6 +30,10 @@ class objeto(nombreArchivo):
 
 
 
+        self.pos=n
+
+
+
 
 
 xwing=crear_desde_stl('xwing.stl')

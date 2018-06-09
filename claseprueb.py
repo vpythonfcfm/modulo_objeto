@@ -1,10 +1,9 @@
 import numpy as np
 from stl import mesh
-from test_convert_stl import *
+from convert_stl import *
 
 
-class Objeto(nombreArchivo):
-    def __init__(self):
-        malla=mesh.Mesh.from_file(nombreArchivo)
-        cog=malla.get_mass_properties()[1]
-        self.pos=
+class Objeto():
+    def __init__(self,nombreArchivo):
+        self.objeto=crear_desde_stl(nombreArchivo)
+        self.pos=nombreArchivo.get_mass_properties()[2]
