@@ -7,3 +7,4 @@ myobj = stl_to_faces("STLbot.stl")
 myobj.smooth()
 myobj.color = color.orange
 myobj.material = materials.wood
+#
