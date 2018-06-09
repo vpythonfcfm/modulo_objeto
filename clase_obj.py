@@ -2,7 +2,7 @@ from stl import mesh
 from vpython import *
 
 class objeto(nombreArchivo):
-    from convert_stl import *
+    from funcion import *
     crear_desde_stl(nombreArchivo)
     def __init__(self):
 

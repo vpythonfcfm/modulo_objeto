@@ -1,6 +1,6 @@
 import numpy as np
 from stl import mesh
-from convert_stl import *
+from funcion import *
 
 
 class Objeto():
