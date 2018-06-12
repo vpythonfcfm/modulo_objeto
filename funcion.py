@@ -28,3 +28,7 @@ def crear_desde_stl(malla):
         b = vertex(pos=vec(vector1[n][0]-cdg[0], vector1[n][1]-cdg[1], vector1[n][2]-cdg[2]), color=color.red, normal=normalActual)
         c = vertex(pos=vec(vector2[n][0]-cdg[0], vector2[n][1]-cdg[1], vector2[n][2]-cdg[2]), color=color.red, normal=normalActual)
         tris.append(triangle(vs=[a, b, c]))#esto toma los vertex para hacer un triangulo y los agrega a la lista que originalmente estaba vacía
+
+def importar_stl(nombreArchivo):
+    assert type(nombreArchivo)==str
+    return mesh.Mesh.from_file(nombreArchivo)
