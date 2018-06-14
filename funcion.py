@@ -1,5 +1,6 @@
 from stl import mesh
 from vpython import *
+import numpy as np
 #la idea es que 'malla' sea un archivo stl, eso se logra importando un archivo con mesh.Mesh.from_file('nombrearchivo')
 #y asignandolo a una variable que luego sería la entrada de la función crear_desde_stl
 def crear_desde_stl(malla):
@@ -24,11 +25,39 @@ def crear_desde_stl(malla):
         normalActual = vec(normales[n][0], normales[n][1], normales[n][2])#lee la normal correspondiente a la iteracion y la transforma en un vec que entienda vpython
         #lo que viene aca abajo es a partir de las listas de los vectors, se crean los vertex de vpython que sirven para hacer los triangles
         #de vpython ya que para hacer los triangulos es necesario que sean vertex y que cada uno especifique la normal
-        a = vertex(pos=vec(vector0[n][0]-cdg[0], vector0[n][1]-cdg[1], vector0[n][2]-cdg[2]), color=color.red, normal=normalActual)
+        a = vertex(pos=vec(vector0[n][0]-cdg[0], vector0[n][1]-cdg[1], vector0[n][2]-cdg[2]), color=color.red, normal=normalActual,adjust_axis())
         b = vertex(pos=vec(vector1[n][0]-cdg[0], vector1[n][1]-cdg[1], vector1[n][2]-cdg[2]), color=color.red, normal=normalActual)
         c = vertex(pos=vec(vector2[n][0]-cdg[0], vector2[n][1]-cdg[1], vector2[n][2]-cdg[2]), color=color.red, normal=normalActual)
         tris.append(triangle(vs=[a, b, c]))#esto toma los vertex para hacer un triangulo y los agrega a la lista que originalmente estaba vacía
 
+
+
+    epsilon=2*np.pi*0.001
+
+    while True:
+        print('uwu')
+        rate(100)
+        for triangulo in tris:
+            print('holi')
+            triangulo.v1.pos = triangulo.v1.pos.rotate(angle=epsilon)
+            triangulo.v2.pos = triangulo.v2.pos.rotate(angle=epsilon)
+            triangulo.v0.pos = triangulo.v0.pos.rotate(angle=epsilon)
+        print(tris)
+
+
+
+
+
+
+xwing=mesh.Mesh.from_file('xwing.stl')
 def importar_stl(nombreArchivo):
     assert type(nombreArchivo)==str
     return mesh.Mesh.from_file(nombreArchivo)
+
+crear_desde_stl(xwing)
+
+def rotar(t):
+    return np.array([[np.cos(t),np.sin(t),0],[-np.sin(t),np.cos(t),0],[0,0,1]])
+
+def multiplicar_vertex_matriz(vertexDeVpython,Matriz)
+    a=np.array([vertexDeVpython.pos.x,vertexDeVpython.pos.y,vertexDeVpython.pos.z])
