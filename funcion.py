@@ -25,7 +25,7 @@ def crear_desde_stl(malla):
         normalActual = vec(normales[n][0], normales[n][1], normales[n][2])#lee la normal correspondiente a la iteracion y la transforma en un vec que entienda vpython
         #lo que viene aca abajo es a partir de las listas de los vectors, se crean los vertex de vpython que sirven para hacer los triangles
         #de vpython ya que para hacer los triangulos es necesario que sean vertex y que cada uno especifique la normal
-        a = vertex(pos=vec(vector0[n][0]-cdg[0], vector0[n][1]-cdg[1], vector0[n][2]-cdg[2]), color=color.red, normal=normalActual,adjust_axis())
+        a = vertex(pos=vec(vector0[n][0]-cdg[0], vector0[n][1]-cdg[1], vector0[n][2]-cdg[2]), color=color.red, normal=normalActual)
         b = vertex(pos=vec(vector1[n][0]-cdg[0], vector1[n][1]-cdg[1], vector1[n][2]-cdg[2]), color=color.red, normal=normalActual)
         c = vertex(pos=vec(vector2[n][0]-cdg[0], vector2[n][1]-cdg[1], vector2[n][2]-cdg[2]), color=color.red, normal=normalActual)
         tris.append(triangle(vs=[a, b, c]))#esto toma los vertex para hacer un triangulo y los agrega a la lista que originalmente estaba vacía
@@ -34,11 +34,10 @@ def crear_desde_stl(malla):
 
     epsilon=2*np.pi*0.001
 
+    #prueba de rotacion que funciona!!!
     while True:
-        print('uwu')
         rate(100)
         for triangulo in tris:
-            print('holi')
             triangulo.v1.pos = triangulo.v1.pos.rotate(angle=epsilon)
             triangulo.v2.pos = triangulo.v2.pos.rotate(angle=epsilon)
             triangulo.v0.pos = triangulo.v0.pos.rotate(angle=epsilon)
@@ -56,8 +55,37 @@ def importar_stl(nombreArchivo):
 
 crear_desde_stl(xwing)
 
-def rotar(t):
-    return np.array([[np.cos(t),np.sin(t),0],[-np.sin(t),np.cos(t),0],[0,0,1]])
 
-def multiplicar_vertex_matriz(vertexDeVpython,Matriz)
+
+
+
+
+
+'''
+todo lo que viene acá es lo que hace rotar un objeto en los distintos ejes del sist de referencia de vpython
+por lo que va a haber que hacer un cambio de base que estoy pensando para poder usarlo de una manera más 
+limpia, probablemente sea con el producto punto o cruz entre los dos ultimos vectores posicion y así sacar cuanto tiene 
+que rotar
+
+
+
+'''
+def multiplicar_vertex_matriz(vertexDeVpython,Matriz):
     a=np.array([vertexDeVpython.pos.x,vertexDeVpython.pos.y,vertexDeVpython.pos.z])
+    out=Matriz.dot(a)
+    return vec(out[0],out[1],out[2])
+
+
+
+def rotar_x(vertexDeVpython,theta):
+    matrizRot=np.array([[1,0,0],[0,np.cos(theta),-np.sin(theta)],[0,np.sin(theta),np.cos(theta)]])
+    multiplicar_vertex_matriz(vertexDeVpython,matrizRot)
+
+
+def rotar_y(vertexDeVpython,theta):
+    matrizRot=np.array([[1,0,0],[0,np.cos(theta),-np.sin(theta)],[0,np.sin(theta),np.cos(theta)]])
+    multiplicar_vertex_matriz(vertexDeVpython,matrizRot)
+
+def rotar_z(vertexDeVpython,theta):
+    matrizRot=np.array([[np.cos(theta),-np.sin(theta),0],[np.sin(theta),np.cos(theta),0],[0,0,1]])
+    multiplicar_vertex_matriz(vertexDeVpython,matrizRot)
