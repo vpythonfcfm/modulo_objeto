@@ -68,7 +68,8 @@ limpia, probablemente sea con el producto punto o cruz entre los dos ultimos vec
 que rotar
 
 
-
+noue el eje z es perpendicular a la pantalla en vpython, el x horizontal e y es vertical
+todo lo que está adentro
 '''
 def multiplicar_vertex_matriz(vertexDeVpython,Matriz):
     a=np.array([vertexDeVpython.pos.x,vertexDeVpython.pos.y,vertexDeVpython.pos.z])
@@ -89,3 +90,5 @@ def rotar_y(vertexDeVpython,theta):
 def rotar_z(vertexDeVpython,theta):
     matrizRot=np.array([[np.cos(theta),-np.sin(theta),0],[np.sin(theta),np.cos(theta),0],[0,0,1]])
     multiplicar_vertex_matriz(vertexDeVpython,matrizRot)
+
+
