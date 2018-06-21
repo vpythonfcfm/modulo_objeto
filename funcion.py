@@ -6,6 +6,19 @@ import numpy as np
 xwing = mesh.Mesh.from_file('xwing.stl')
 
 xwing=objeto(mesh.Mesh.from_file(''))
+
+def multiplicar_matriz_vec(matriz, vecc):
+        vecnp = np.array(vecc.x, vecc.y, vecc.z)
+        out = matriz.dot(vecc)
+        return vec(out[0], out[1], out[2])
+
+def multiplicar_matriz_triangulo(matriz, triangulo):
+    v0, v1, v2 = triangulo.v0.pos, triangulo.v1.pos, triangulo.v2.pos
+    r0 = multiplicar_matriz_vec(matriz, v0)
+    r1 = multiplicar_matriz_vec(matriz, v1)
+    r2 = multiplicar_matriz_vec(matriz, v2)
+    return (r0,r1,r2) 
+
 class objeto():
     def __init__(self,malla):
         self.tris=[]
@@ -25,32 +38,31 @@ class objeto():
             c = vertex(pos=vec(self.v2[n][0] - cdg[0], self.v2[n][1] - cdg[1], self.v2[n][2] - cdg[2]),olor=color.red, normal=normalActual)
             self.tris.append(triangle(vs=[a,b,c]))  # esto toma los vertex para hacer un triangulo y los agrega a la lista que originalmente estaba vacía
 
-    def multiplicar_matriz_vec(matriz, vecc):
-        vecnp = np.array(vecc.x, vecc.y, vecc.z)
-        out = matriz.dot(vecc)
-        return vec(out[0], out[1], out[2])
+    def rotar(self, matrizRot):
+        for triangulo in self.tris:
+            triangulo.v0.pos, triangulo.v1.pos, triangulo.v2.pos = multiplicar_matriz_triangulo(matrizRot, triangulo)
+    
 
     def rotar_x(self, theta):
         matrizRot = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
-        for triangulo in self.tris:
-            triangulo.v0.pos=multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
-            triangulo.v1.pos=multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
-            triangulo.v2.pos=multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+        self.rotar(matrizRot)
 
 
-    def rotar_y(vertexDeVpython, theta):
+    def rotar_y(self, theta):
         matrizRot = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
-        for triangulo in self.tris:
-            triangulo.v0.pos=multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
-            triangulo.v1.pos=multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
-            triangulo.v2.pos=multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+        self.rotar(matrizRot)
 
-    def rotar_z(vertexDeVpython, theta):
+
+    def rotar_z(self, theta):
         matrizRot = np.array([[np.cos(theta), -np.sin(theta), 0], [np.sin(theta), np.cos(theta), 0], [0, 0, 1]])
+        self.rotar(matrizRot)
+
+    def desplazar(self, v):
         for triangulo in self.tris:
-            triangulo.v0.pos=multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
-            triangulo.v1.pos=multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
-            triangulo.v2.pos=multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+            triangulo.v0.pos += v
+            triangulo.v1.pos += v
+            triangulo.v2.pos += v
+
 
 def crear_desde_stl(malla):
     '''
