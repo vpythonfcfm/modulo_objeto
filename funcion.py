@@ -3,6 +3,55 @@ from vpython import *
 import numpy as np
 #la idea es que 'malla' sea un archivo stl, eso se logra importando un archivo con mesh.Mesh.from_file('nombrearchivo')
 #y asignandolo a una variable que luego sería la entrada de la función crear_desde_stl
+xwing = mesh.Mesh.from_file('xwing.stl')
+
+xwing=objeto(mesh.Mesh.from_file(''))
+class objeto():
+    def __init__(self,malla):
+        self.tris=[]
+        cdg=malla.get_mass_properties()[1]
+        self.I=malla.get_mass_properties()[2]
+        self.v0=malla.v0
+        self.v1=malla.v1
+        self.v2=malla.v2
+        self.normales=malla.normals
+
+
+
+        for n in range(len(self.v1)):
+            normalActual = vec(self.normales[n][0], self.normales[n][1], self.normales[n][2])
+            a = vertex(pos=vec(self.v0[n][0] - cdg[0], self.v0[n][1] - cdg[1], self.v0[n][2] - cdg[2]),color=color.red, normal=normalActual)
+            b = vertex(pos=vec(self.v1[n][0] - cdg[0], self.v1[n][1] - cdg[1], self.v1[n][2] - cdg[2]),color=color.red, normal=normalActual)
+            c = vertex(pos=vec(self.v2[n][0] - cdg[0], self.v2[n][1] - cdg[1], self.v2[n][2] - cdg[2]),olor=color.red, normal=normalActual)
+            self.tris.append(triangle(vs=[a,b,c]))  # esto toma los vertex para hacer un triangulo y los agrega a la lista que originalmente estaba vacía
+
+    def multiplicar_matriz_vec(matriz, vecc):
+        vecnp = np.array(vecc.x, vecc.y, vecc.z)
+        out = matriz.dot(vecc)
+        return vec(out[0], out[1], out[2])
+
+    def rotar_x(self, theta):
+        matrizRot = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
+        for triangulo in self.tris:
+            triangulo.v0.pos=multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
+            triangulo.v1.pos=multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
+            triangulo.v2.pos=multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+
+
+    def rotar_y(vertexDeVpython, theta):
+        matrizRot = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
+        for triangulo in self.tris:
+            triangulo.v0.pos=multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
+            triangulo.v1.pos=multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
+            triangulo.v2.pos=multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+
+    def rotar_z(vertexDeVpython, theta):
+        matrizRot = np.array([[np.cos(theta), -np.sin(theta), 0], [np.sin(theta), np.cos(theta), 0], [0, 0, 1]])
+        for triangulo in self.tris:
+            triangulo.v0.pos=multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
+            triangulo.v1.pos=multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
+            triangulo.v2.pos=multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+
 def crear_desde_stl(malla):
     '''
     Esta funciontransforma una malla stl a un formato legible por vpython 7 para python 3.6, se requiere tener el
@@ -32,7 +81,7 @@ def crear_desde_stl(malla):
 
 
 
-    epsilon=2*np.pi*0.001
+    '''epsilon=2*np.pi*0.001
 
     #prueba de rotacion que funciona!!!
     while True:
@@ -41,13 +90,14 @@ def crear_desde_stl(malla):
             triangulo.v1.pos = triangulo.v1.pos.rotate(angle=epsilon)
             triangulo.v2.pos = triangulo.v2.pos.rotate(angle=epsilon)
             triangulo.v0.pos = triangulo.v0.pos.rotate(angle=epsilon)
+            '''
 
 
 
 
 
 
-xwing=mesh.Mesh.from_file('xwing.stl')
+xwing=mesh.Mesh.from_file('libro.stl')
 def importar_stl(nombreArchivo):
     assert type(nombreArchivo)==str
     return mesh.Mesh.from_file(nombreArchivo)
@@ -70,6 +120,20 @@ que rotar
 noue el eje z es perpendicular a la pantalla en vpython, el x horizontal e y es vertical
 todo lo que está adentro
 '''
+
+
+
+def multiplicar_matriz_vec(matriz,vecc):
+    vecnp=np.array(vecc.x,vecc.y,vecc.z)
+    out=matriz.dot(vecc)
+    return vec(out[0],out[1],out[2])
+
+
+
+
+
+
+
 def multiplicar_vertex_matriz(vertexDeVpython,Matriz):
     a=np.array([vertexDeVpython.pos.x,vertexDeVpython.pos.y,vertexDeVpython.pos.z])
     out=Matriz.dot(a)
@@ -106,9 +170,7 @@ def cuantoRotarCadaEje(variable_stl):
     '''
     I=variable_stl.get_mass_properties()[2]
 
-    eig0 = np.linalg.eig(I)[1][:, 0]
-    eig1 = np.linalg.eig(I)[1][:, 1]
-    eig2 = np.linalg.eig(I)[1][:, 2]
+    rotacion = np.linalg.eig(I)
 
     X=np.array([1,0,0])
     Y=np.array([0,1,0])
