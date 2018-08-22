@@ -48,40 +48,42 @@ class objeto():
         return vec(out[0], out[1], out[2])
 
 
-    def rotar_x(self, theta):
+    def rotar_x(self, theta, v):
         matrizRot = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
         for triangulo in self.tris:
-            triangulo.v0.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
-            triangulo.v1.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
-            triangulo.v2.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+            triangulo.v0.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v0.pos-v)+v
+            triangulo.v1.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v1.pos-v)+v
+            triangulo.v2.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v2.pos-v)+v
 
 
-    def rotar_y(self, theta):
+    def rotar_y(self, theta, v):
         matrizRot = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
         for triangulo in self.tris:
-            triangulo.v0.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
-            triangulo.v1.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
-            triangulo.v2.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+            triangulo.v0.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v0.pos-v)+v
+            triangulo.v1.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v1.pos-v)+v
+            triangulo.v2.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v2.pos-v)+v
 
-    def rotar_z(self, theta):
+    def rotar_z(self, theta, v):
         matrizRot = np.array([[np.cos(theta), -np.sin(theta), 0], [np.sin(theta), np.cos(theta), 0], [0, 0, 1]])
         for triangulo in self.tris:
-            triangulo.v0.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v0.pos)
-            triangulo.v1.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v1.pos)
-            triangulo.v2.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v2.pos)
+            triangulo.v0.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v0.pos-v)+v
+            triangulo.v1.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v1.pos-v)+v
+            triangulo.v2.pos=self.multiplicar_matriz_vec(matrizRot,triangulo.v2.pos-v)+v
+
 ###########################################################################################
 
 
 
 
 XWING=objeto(xwing)
-omega=1
+omega=3
 dt=.01
 t=0
 R=50
 while True:
-    rate(60)
+    rate(100)
     XWING.set_pos(R*vec(np.cos(omega*t),np.sin(omega*t),0))
-    XWING.rotar_z(omega*2*dt)
+
+    XWING.rotar_z(5*omega*dt, XWING.cdg)
 
     t+=dt
